@@ -65,6 +65,30 @@ module.exports = function(app, swig) {
           res.send(respuesta);
     });
 
+    app.get("/autores/filtrar/:rol", function(req, res){
+      var autores = [ {
+                  "nombre" : "Jamie Cook",
+                  "grupo"  : "Artic Monkeys",
+                  "rol"    : "guitarrista"
+              }, {
+                  "nombre" : "Ringo Starr",
+                  "grupo"  : "The Beatles",
+                  "rol"    : "bateria"
+              }, {
+                  "nombre" : "Jin",
+                  "grupo"  : "BTS",
+                  "rol"    : "cantante"
+
+              } ];
+       let nautores = autores.filter( (autor) => autor.rol == req.params.rol )
+        let respuesta = swig.renderFile("views/autores.html", {
+            vendedor : "Autores",
+            autores : nautores,
+        });
+
+        res.send( respuesta );
+    });
+
     app.get('/autores/*', function (req, res) {
           res.redirect("/autores");
     });
