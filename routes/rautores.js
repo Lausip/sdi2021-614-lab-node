@@ -21,11 +21,27 @@ module.exports = function(app, swig) {
         res.send(respuesta);
     });
     app.get('/autores/agregar', function (req, res) {
+        let roles = [{
+                    "text": "Cantante",
+                    "value": "cantante",
+                }, {
+                    "text": "Batería",
+                    "value": "batería"
+                }, {
+                     "text": "Guitarrista",
+                    "value": "guitarrista"
+                }, {
+                    "text": "Bajista",
+                    "value": "bajista"
+                }, {
+                     "text": "Teclista",
+                    "value": "teclista"
+                }];
         let respuesta = swig.renderFile('views/autores-agregar.html', {
-
+                roles : roles
         });
         res.send(respuesta);
-    })
+    });
 
     app.post("/autor", function(req, res) {
           let error = " no enviado en la petición." + "<br>";
@@ -51,6 +67,6 @@ module.exports = function(app, swig) {
 
     app.get('/autores/*', function (req, res) {
           res.redirect("/autores");
-    })
+    });
 
 };
