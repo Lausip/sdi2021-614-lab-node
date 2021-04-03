@@ -18,6 +18,8 @@ module.exports = function (app, swig, gestorBD) {
         res.send("Usuario desconectado");
     })
 
+
+
     app.post("/identificarse", function(req, res) {
         let seguro = app.get("crypto").createHmac('sha256', app.get('clave'))
             .update(req.body.password).digest('hex');
