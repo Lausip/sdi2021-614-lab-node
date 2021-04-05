@@ -62,6 +62,7 @@
 		<tr>
 			<td>{{ comentario.texto }}</td>
 			<td>{{ comentario.autor }}</td>
+			<td><a href="/comentario/borrar/{{ comentario._id.toString() }}">Borrar</a> <br></td>
 		</tr>
 		{% endfor %}
 		</tbody>

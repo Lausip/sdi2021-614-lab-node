@@ -19,5 +19,31 @@ module.exports = function(app, swig, gestorBD) {
                 res.redirect("/cancion/"+ comentario.cancion_id);
             }
         });
+    });
+    app.get('/comentario/borrar/:id', function (req, res) {
+
+        let criterio = {"_id" : gestorBD.mongo.ObjectID(req.params.id) };
+        var comentarioCancion="";
+        var comentarioAutor="";
+        gestorBD.obtenerComentarios(criterio, function(comentarios){
+            if (comentarios == null) {
+                res.send("Error al recuperar los comentarios");
+            } else {
+
+               comentarioCancion=comentarios[0].cancion_id;
+               comentarioAutor=comentarios[0].autor;
+
+            }
+        });
+        gestorBD.eliminarComentario(criterio,function(comentario){
+            if(comentarioAutor!=req.session.usuario){
+                res.send("Error : Su autor no concide con tu inicio de sesión");
+            }
+            if ( comentario == null ){
+                res.send("Error : Al intentar eliminar el comentario");
+            } else {
+                res.redirect("/cancion/"+ comentarioCancion);
+            }
+        });
     })
 }
