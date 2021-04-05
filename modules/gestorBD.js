@@ -19,11 +19,11 @@ module.exports = {
                 }
                 db.close();
             });
-        }
-    });
-},
+             }
+        });
+    },
 
-obtenerUsuarios : function(criterio,funcionCallback){
+    obtenerUsuarios : function(criterio,funcionCallback){
         this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
             if (err) {
                 funcionCallback(null);
@@ -72,7 +72,7 @@ obtenerUsuarios : function(criterio,funcionCallback){
                 db.close();
             });
         }
-    });
+        });
     },
     insertarCancion : function(cancion, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
@@ -90,5 +90,41 @@ obtenerUsuarios : function(criterio,funcionCallback){
                 });
             }
         });
+     },
+    insertarComentario : function(comentario, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                let collection = db.collection('comentarios');
+                collection.insert(comentario, function(err, result) {
+                    if (err) {
+                        funcionCallback(null);
+                    } else {
+                        funcionCallback(result.ops[0]._id);
+                    }
+                    db.close();
+                });
+            }
+        });
+    },
+    obtenerComentarios : function(criterio,funcionCallback){
+        this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                let collection = db.collection('comentarios');
+                collection.find(criterio).toArray(function(err, comentarios) {
+                    if (err) {
+                        funcionCallback(null);
+                    } else {
+                        funcionCallback(comentarios);
+                    }
+                    db.close();
+                });
+            }
+        });
     }
+
+
 };
