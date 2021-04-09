@@ -23,7 +23,6 @@ module.exports = function(app,swig,gestorBD) {
         res.send(respuesta);
     })
 
-
     app.get('/suma', function(req, res) {
         let respuesta = parseInt(req.query.num1) + parseInt(req.query.num2);
         res.send(String(respuesta));
@@ -134,7 +133,7 @@ module.exports = function(app,swig,gestorBD) {
                                     if (err) {
                                         res.send("Error al subir el audio");
                                     } else {
-                                        res.send("Agregada id: "+ id);
+                                        res.redirect("/publicaciones");
                                     }
                                 });
                             }
@@ -161,7 +160,7 @@ app.post('/cancion/modificar/:id', function (req, res) {
                 if( result == null){
                     res.send("Error en la modificación");
                 } else {
-                    res.send("Modificado");
+                    res.redirect("/publicaciones");
                 }
             });
         }
