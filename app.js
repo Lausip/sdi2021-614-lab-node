@@ -109,6 +109,10 @@ require("./routes/rautores.js")(app, swig);
 app.get('/', function (req, res) {
     res.redirect('/tienda');
 })
+app.get('/error', function(req, res) {
+    let respuesta = swig.renderFile("views/error.html", {});
+    res.send(respuesta);
+})
 app.use(function(err,req,res,next){
         console.log("Servidor activo "+err);
         if(!res.headersSent){

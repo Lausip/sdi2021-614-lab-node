@@ -197,7 +197,7 @@ module.exports = function(app,swig,gestorBD) {
                         res.redirect("/compras");
                     }
                 }); }else {
-                res.redirect("/cancion/" + req.params.id.toString() + "?mensaje=Error: La canción no se puede comprar"+
+                res.redirect("/error" + "?mensaje=Error: La canción no se puede comprar"+
                     "&tipoMensaje=alert-danger ");
 
             }
@@ -264,6 +264,9 @@ function paso2ModificarAudio(files, id, callback){
             }
         });
     });
+
+
+
     function puedeComprarCancion(usuario, cancionId, functionCallback) {
         let criterio_cancion_autor = { $and: [{ "_id": cancionId },{ "autor": usuario }] };
         let criterio_comprada = { $and: [{ "cancionId": cancionId }, { "usuario": usuario }] };
@@ -281,4 +284,5 @@ function paso2ModificarAudio(files, id, callback){
             }
         });
     }
+
 };
