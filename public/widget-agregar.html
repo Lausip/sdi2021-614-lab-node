@@ -10,7 +10,7 @@
         <label class="control-label col-sm-2" for="agregar-genero">Genero:</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" name="agregar-genero"
-                   placeholder="Nombre de mi canción" id="agregar-genero" />
+                   placeholder="genero" id="agregar-genero" />
         </div>
     </div>
     <div class="form-group">
@@ -43,9 +43,24 @@
 
             },
             error : function (error){
+                console.log(error);
+                $("#div-errores").remove();
+                let errores = error.responseJSON.error;
+                if (errores != null && errores.length>0) {
+                    $("#widget-agregar")
+                        .prepend("<div id = 'div-errores' class='alert alert-danger'>" +
+                            "<ul id = 'ul-errores'></ul></div>");
+                    for (i = 0; i < errores.length; i++) {
+                        $("#ul-errores").append("<li >"+ errores[i] + "</li>");
+                    }
+                } else {
+                    $("#widget-agregar")
+                        .prepend("<div id = 'div-errores' class='alert alert-danger'>Se ha " +
+                            "producido un error no controlado</div>");
+                }
                 <!--Mostrar errores que se va después al cliente-->
-                $('#div-alert-danger').show();
-                $('#div-alert-danger').text('Error: ' + error.responseJSON.error);
+                //$('#div-alert-danger').show();
+                //$('#div-alert-danger').text('Error: ' + error.responseJSON.error);
                // $( "#contenedor-principal" ).load("widget-login.html");
             }
         });

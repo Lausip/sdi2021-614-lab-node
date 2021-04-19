@@ -85,42 +85,29 @@ module.exports = function (app, gestorBD) {
             genero: req.body.genero,
             precio: req.body.precio,
         }
-        // Validar nombre
-        if (cancion.nombre == null || cancion.nombre.length < 3 || cancion.nombre.length > 15 || typeof cancion.nombre=="undefined") {
-            res.status(401);
-            res.json({
-                error: "nombre de la canción incorrecto"
-            });
-        }
-        // Validar genero
-        else if (cancion.genero == null || cancion.genero.length < 3  ||typeof cancion.genero=="undefined") {
-            res.status(401);
-            res.json({
-                error: "género de la canción incorrecto"
-            });
-        }
-        // Validar precio
-        else if (cancion.precio == null || cancion.precio <= 0 || typeof cancion.precio== "undefined" ) {
-            res.status(401);
-            res.json({
-                error: "precio de la canción incorrecto"
-            });
-        } else {
-            gestorBD.insertarCancion(cancion, function (id) {
-                if (id == null) {
-                    res.status(500);
-                    res.json({
-                        error: "se ha producido un error"
-                    })
-                } else {
-                    res.status(201);
-                    res.json({
-                        mensaje: "canción insertada",
-                        _id: id
-                    })
-                }
-            });
-        }
+        validarCancion(cancion, function (error) {
+            if (error != null && error.length > 0) {
+                res.status(400);
+                res.json({
+                    error: error
+                })
+            } else {
+                gestorBD.insertarCancion(cancion, function (id) {
+                    if (id == null) {
+                        res.status(500);
+                        res.json({
+                            error: "se ha producido un error"
+                        })
+                    } else {
+                        res.status(201);
+                        res.json({
+                            mensaje: "canción insertada",
+                            _id: id
+                        });
+                    }
+                });
+            }
+        });
     });
 
     app.put("/api/cancion/:id", function (req, res) {
@@ -129,48 +116,40 @@ module.exports = function (app, gestorBD) {
 
         let cancion = {}; // Solo los atributos a modificar
         //validar datos
-        if (req.body.nombre != null && req.body.nombre.length >= 3 && req.body.nombre.length <= 15)
+
+        if (req.body.nombre != null )
             cancion.nombre = req.body.nombre;
-        else {
-            res.status(401);
-            return res.json({
-                error: "nombre de la canción incorrecto"
-            });
-        }
-        if (req.body.genero != null && cancion.genero.length >= 3)
+        if (req.body.genero != null)
             cancion.genero = req.body.genero;
-        else {
-            res.status(401);
-            return res.json({
-                error: "género de la canción incorrecto"
-            });
-        }
-        if (req.body.precio != null && req.body.precio > 0)
+        if (req.body.precio != null )
             cancion.precio = req.body.precio;
-        else {
-            res.status(401);
-            return res.json({
-                error: "precio de la canción incorrecto"
-            });
-        }
         let cancion_id = gestorBD.mongo.ObjectID(req.params.id);
         let usuario = res.usuario;
+        var errors = new Array();
         userAthorOfSong(usuario, cancion_id, function (isAuthor) {
             if (isAuthor) {
-
-                gestorBD.modificarCancion(criterio, cancion, function (result) {
-                    if (result == null) {
+                validarCancion(cancion,function(error) {
+                    if (error != null && error.length > 0) {
                         res.status(500);
                         res.json({
-                            error: "se ha producido un error"
-                        })
-                    } else {
-                        res.status(200);
-                        res.json({
-                            mensaje: "canción modificada",
-                            _id: req.params.id
+                            error: error
                         })
                     }
+
+                    gestorBD.modificarCancion(criterio, cancion, function (result) {
+                        if (result == null) {
+                            res.status(500);
+                            res.json({
+                                error: "se ha producido un error"
+                            })
+                        } else {
+                            res.status(200);
+                            res.json({
+                                mensaje: "canción modificada",
+                                _id: req.params.id
+                            })
+                        }
+                    });
                 });
             } else {
                 res.status(401);
@@ -179,6 +158,7 @@ module.exports = function (app, gestorBD) {
                 });
             }
         });
+
     });
 
     function userAthorOfSong(usuario, cancionId, callback) {
@@ -195,5 +175,18 @@ module.exports = function (app, gestorBD) {
                 callback(true);
             }
         });
+    }
+
+
+
+
+    function validarCancion(cancion, funcionCallback) {
+        let errors = new Array();
+        if (cancion.nombre === null || typeof cancion.nombre === 'undefined' || cancion.nombre === "") errors.push("El nombre de la canción no puede  estar vacio")
+        if (cancion.genero === null || typeof cancion.genero === 'undefined' || cancion.genero === "") errors.push("El género de la canción no puede  estar vacio")
+        if (cancion.precio === null || typeof cancion.precio === 'undefined' || cancion.precio < 0 || cancion.precio === "") errors.push("El precio de la canción no puede ser negativo")
+        if (errors.length <= 0) funcionCallback(null)
+        else
+            funcionCallback(errors)
     }
 }
