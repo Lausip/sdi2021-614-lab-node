@@ -31,8 +31,9 @@
     </div>
   </div>
 </nav>
-
-
+  <!--Errores aquí-->
+  <div class="alert alert-danger" id="div-alert-danger">
+  </div>
 <!-- Contenido -->
 <div class="container" id="contenedor-principal"> <!--  id para identificar -->
 
@@ -57,7 +58,7 @@
   function widgetCanciones() {
     $("#contenedor-principal").load("widget-canciones.html");
   }
-
+  $('#div-alert-danger').hide();
 
 </script>
 

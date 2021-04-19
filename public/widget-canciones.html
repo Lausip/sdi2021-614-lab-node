@@ -70,7 +70,9 @@
                 $( "#"+_id ).remove(); // eliminar el <tr> de la canción
             },
             error : function (error){
-                $( "#contenedor-principal" ).load("widget-login.html");
+                //$( "#contenedor-principal" ).load("widget-login.html");
+                $('#div-alert-danger').show();
+                $('#div-alert-danger').text('Error: ' + error.responseJSON.error);
             }
         });
 

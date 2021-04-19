@@ -43,7 +43,10 @@
 
             },
             error : function (error){
-                $( "#contenedor-principal" ).load("widget-login.html");
+                <!--Mostrar errores que se va después al cliente-->
+                $('#div-alert-danger').show();
+                $('#div-alert-danger').text('Error: ' + error.responseJSON.error);
+               // $( "#contenedor-principal" ).load("widget-login.html");
             }
         });
     }
